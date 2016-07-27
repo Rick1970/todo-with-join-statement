@@ -12,3 +12,5 @@
 | Cat4 | Assigns ID to Category Object (.Save()/.GetAll()/.GetId()) | "Chores" | true (0,0) |
 | Cat5 | Finds category in DB (.Save()/.GetId()/.Find()) | "Chores" | true |
 | Cat6 | Retrieves all tasks with categories (.Save()/.GetId()/.GetTasks()) | "Chores" | "Laundry, dishes, etc..." |
+| Cat7 | Update category in DB | "Work Chores" | "Category Updated to Work Chores" |
+| Cat8 | Delete category from DB | Delete category | Category Deleted |
