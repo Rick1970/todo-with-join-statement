@@ -9,12 +9,14 @@ namespace ToDoList
     private int _id;
     private string _name;
 
+    //Set ID to zero by default, as it is set by SQL
     public Category(string Name, int Id = 0)
     {
       _id = Id;
       _name = Name;
     }
 
+    //Override Equals system method so the tests can be overridden (inside scope of this class)
     public override bool Equals(System.Object otherCategory)
     {
       if (!(otherCategory is Category))
@@ -23,9 +25,13 @@ namespace ToDoList
       }
       else
       {
+        //Declare and cast newCategory
         Category newCategory = (Category) otherCategory;
-        bool idEquality = this.GetId() == newCategory.GetId();
-        bool nameEquality = this.GetName() == newCategory.GetName();
+        //Make sure IDs match
+        bool idEquality = (this.GetId() == newCategory.GetId());
+        //Make sure names match
+        bool nameEquality = (this.GetName() == newCategory.GetName());
+        //Only return true if both match
         return (idEquality && nameEquality);
       }
     }
@@ -47,20 +53,24 @@ namespace ToDoList
     {
       List<Category> allCategories = new List<Category>{};
 
+      //Open connection
       SqlConnection conn = DB.Connection();
       conn.Open();
 
       SqlCommand cmd = new  SqlCommand("SELECT * FROM categories;", conn);
       SqlDataReader rdr = cmd.ExecuteReader();
 
+      //SqlDataReader.Read() method returns boolean - true if more rows, false otherwise
       while(rdr.Read())
       {
+        //Specific methods to get types from DB
         int categoryId = rdr.GetInt32(0);
         string categoryName = rdr.GetString(1);
         Category newCategory = new Category(categoryName, categoryId);
         allCategories.Add(newCategory);
       }
 
+      //More explanation needed...
       if (rdr != null)
       {
         rdr.Close();
@@ -79,16 +89,22 @@ namespace ToDoList
 
       SqlCommand cmd = new SqlCommand("INSERT INTO categories (name) OUTPUT INSERTED.id VALUES (@CategoryName);", conn);
 
+      //Pass to SqlParameter - @ required
       SqlParameter nameParameter = new SqlParameter();
+      //Manually assign properties - could also use as arguments in constructor
+      //Dummy variable - Gets the name from the object - same as Name property above (in constructor) - column title
       nameParameter.ParameterName = "@CategoryName";
       nameParameter.Value = this.GetName();
+
       cmd.Parameters.Add(nameParameter);
       SqlDataReader rdr = cmd.ExecuteReader();
 
       while(rdr.Read())
       {
+        //Making sure object in memory matches data in database (autoincremented ID)
         this._id = rdr.GetInt32(0);
       }
+      //Close these if they exist  - if null occurs, there is likely another issue going on...
       if (rdr != null)
       {
         rdr.Close();
@@ -104,6 +120,7 @@ namespace ToDoList
       SqlConnection conn = DB.Connection();
       conn.Open();
       SqlCommand cmd = new SqlCommand("DELETE FROM categories;", conn);
+      //Use ExecuteNonQuery method when executing a Update/Delete command
       cmd.ExecuteNonQuery();
       conn.Close();
     }
