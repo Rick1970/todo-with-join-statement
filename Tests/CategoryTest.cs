@@ -99,6 +99,24 @@ namespace ToDoList
       Assert.Equal(testTaskList, resultTaskList);
     }
 
+    [Fact]
+    public void T7_Update_UpdatesCategoryInDatabase()
+    {
+      //Arrange
+      string name = "Home Chores";
+      Category testCategory = new Category(name);
+      testCategory.Save();
+      string newName = "Work Chores";
+
+      //Act
+      testCategory.Update(newName);
+
+      string result = testCategory.GetName();
+
+      //Assert
+      Assert.Equal(newName, result);
+    }
+
     public void Dispose()
     {
       Task.DeleteAll();
