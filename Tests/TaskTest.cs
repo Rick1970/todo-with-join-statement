@@ -25,15 +25,17 @@ namespace ToDoList
     [Fact]
     public void Test_Equal_ReturnsTrueIfDescriptionsAreTheSame()
     {
-      Task firstTask = new Task("Mow the lawn");
-      Task secondTask = new Task("Mow the lawn");
+      DateTime testTime = new DateTime(2016, 1, 1);
+      Task firstTask = new Task("Mow the lawn",testTime);
+      Task secondTask = new Task("Mow the lawn",testTime);
       Assert.Equal(firstTask,secondTask);
     }
 
     [Fact]
     public void Test_Save_SavesToDatabase()
     {
-      Task testTask = new Task("Mow the lawn");
+      DateTime testTime = new DateTime(2016, 1, 1);
+      Task testTask = new Task("Mow the lawn",testTime);
 
       testTask.Save();
       List<Task> result = Task.GetAll();
@@ -45,7 +47,9 @@ namespace ToDoList
     [Fact]
     public void Test_Save_AssignsIdToObject()
     {
-      Task testTask=new Task("Mow the lawn");
+      DateTime testTime = new DateTime(2016, 1, 1);
+
+      Task testTask=new Task("Mow the lawn",testTime);
 
       testTask.Save();
       Task savedTask = Task.GetAll()[0];
@@ -58,7 +62,9 @@ namespace ToDoList
     [Fact]
     public void Test_Find_FindsTaskInDatabase()
     {
-      Task testTask = new Task("Mow the lawn");
+      DateTime testTime = new DateTime(2016, 1, 1);
+
+      Task testTask = new Task("Mow the lawn",testTime);
       testTask.Save();
 
       Task foundTask = Task.Find(testTask.GetId());
@@ -69,8 +75,10 @@ namespace ToDoList
     [Fact]
     public void Test_AddCategory_AddsCategoryToTask()
     {
+      DateTime testTime = new DateTime(2016, 1, 1);
+
       //Arrange
-      Task testTask = new Task("Mow the lawn");
+      Task testTask = new Task("Mow the lawn",testTime);
       testTask.Save();
 
       Category testCategory = new Category("Home stuff");
@@ -88,7 +96,9 @@ namespace ToDoList
 
     public void Test18_GetCategories_ReturnsAllTaskCategories()
     {
-      Task testTask = new Task("Mow the lawn");
+      DateTime testTime = new DateTime(2016, 1, 1);
+
+      Task testTask = new Task("Mow the lawn",testTime);
       testTask.Save();
 
       Category testCategory1 = new Category("Home Stuff");
@@ -110,9 +120,10 @@ namespace ToDoList
       //Arrange
       Category testCategory = new Category("Home stuff");
       testCategory.Save();
+      DateTime testTime = new DateTime(2016, 1, 1);
 
       string testDescription = "Mow the lawn";
-      Task testTask = new Task(testDescription);
+      Task testTask = new Task(testDescription,testTime);
       testTask.Save();
 
       //Act

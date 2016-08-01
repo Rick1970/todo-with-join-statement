@@ -127,11 +127,12 @@ namespace ToDoList
       //Arrange
       Category testCategory = new Category("Household chores");
       testCategory.Save();
+      DateTime testTime = new DateTime(2016, 1, 1);
 
-      Task testTask = new Task("Mow the lawn");
+      Task testTask = new Task("Mow the lawn",testTime);
       testTask.Save();
 
-      Task testTask2 = new Task("Water the garden");
+      Task testTask2 = new Task("Water the garden",testTime);
       testTask2.Save();
 
       //Act
@@ -149,11 +150,12 @@ namespace ToDoList
     {
       Category testCategory = new Category("Househould chores");
       testCategory.Save();
+      DateTime testTime = new DateTime(2016, 1, 1);
 
-      Task testTask1= new Task("Mow the lawn");
+      Task testTask1= new Task("Mow the lawn",testTime);
       testTask1.Save();
 
-      Task testTask2 = new Task("Buy plane ticket");
+      Task testTask2 = new Task("Buy plane ticket",testTime);
       testTask2.Save();
 
       testCategory.AddTask(testTask1);
@@ -166,7 +168,9 @@ namespace ToDoList
     public void Test_Delete_DeletesCategoryAssociationsFromDatabase()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn");
+      DateTime testTime = new DateTime(2016, 1, 1);
+
+      Task testTask = new Task("Mow the lawn",testTime);
       testTask.Save();
 
       string testName = "Home stuff";

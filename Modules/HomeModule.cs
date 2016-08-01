@@ -32,7 +32,7 @@ namespace ToDoList
         return View["tasks_form.cshtml"];
       };
       Post["/tasks/new"] = _ => {
-        Task newTask = new Task(Request.Form["task-description"]);
+        Task newTask = new Task(Request.Form["task-description"],Request.Form["task-dueDate"]);
         newTask.Save();
         return View["success.cshtml"];
       };

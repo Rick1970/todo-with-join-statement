@@ -244,7 +244,7 @@ namespace ToDoList
       List<Task> tasks = new List<Task>{};
       foreach(int taskId in taskIds)
       {
-          SqlCommand taskQuery = new SqlCommand("SELECT * FROM tasks WHERE id= @TaskId;",conn);
+          SqlCommand taskQuery = new SqlCommand("SELECT * FROM tasks WHERE id= @TaskId ORDER BY due_date;",conn);
 
           SqlParameter taskIdParameter= new SqlParameter();
           taskIdParameter.ParameterName="@TaskId";
@@ -256,7 +256,8 @@ namespace ToDoList
           {
             int thisTaskId=queryReader.GetInt32(0);
             string taskDescription=queryReader.GetString(1);
-            Task foundTask = new Task(taskDescription,thisTaskId);
+            DateTime taskDueDate = queryReader.GetDateTime(2);
+            Task foundTask = new Task(taskDescription, taskDueDate, thisTaskId);
             tasks.Add(foundTask);
           }
           if(queryReader!= null)
