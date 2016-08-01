@@ -29,11 +29,10 @@ namespace ToDoList
         return View["success.cshtml"];
       };
       Get["/tasks/new"] = _ => {
-        List<Category> AllCategories = Category.GetAll();
-        return View["tasks_form.cshtml", AllCategories];
+        return View["tasks_form.cshtml"];
       };
       Post["/tasks/new"] = _ => {
-        Task newTask = new Task(Request.Form["task-description"], Request.Form["category-id"]);
+        Task newTask = new Task(Request.Form["task-description"]);
         newTask.Save();
         return View["success.cshtml"];
       };
@@ -65,6 +64,40 @@ namespace ToDoList
       Delete["category/delete/{id}"] = parameters => {
         Category SelectedCategory = Category.Find(parameters.id);
         SelectedCategory.Delete();
+        return View["success.cshtml"];
+      };
+
+      Get["tasks/{id}"]=parameters=>{
+        Dictionary<string, object> model = new Dictionary<string, object>();
+        Task SelectedTask = Task.Find(parameters.id);
+        List<Category> TaskCategories = SelectedTask.GetCategories();
+        List<Category> AllCategories = Category.GetAll();
+        model.Add("task",SelectedTask);
+        model.Add("taskCategories",TaskCategories);
+        model.Add("allCategories",AllCategories);
+        return View["task.cshtml",model];
+      };
+
+      Get["categories/{id}"] = parameters => {
+        Dictionary<string, object> model = new Dictionary<string, object>();
+        Category selectedCategory = Category.Find(parameters.id);
+        List<Task> categoryTasks = selectedCategory.GetTasks();
+        List<Task> allTasks = Task.GetAll();
+        model.Add("category", selectedCategory);
+        model.Add("categoryTasks", categoryTasks);
+        model.Add("allTasks", allTasks);
+        return View["category.cshtml", model];
+      };
+      Post["task/add_category"] = _ =>{
+        Category category= Category.Find(Request.Form["category-id"]);
+        Task task = Task.Find(Request.Form["task-id"]);
+        task.AddCategory(category);
+        return View["success.cshtml"];
+      };
+      Post["category/add_task"] = _ => {
+        Category category = Category.Find(Request.Form["category-id"]);
+        Task task = Task.Find(Request.Form["task-id"]);
+        category.AddTask(task);
         return View["success.cshtml"];
       };
     }
