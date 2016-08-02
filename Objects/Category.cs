@@ -221,19 +221,22 @@ namespace ToDoList
       SqlConnection conn = DB.Connection();
       conn.Open();
 
-      SqlCommand cmd = new SqlCommand("SELECT task_id FROM categories_tasks WHERE category_id = @CategoryId;", conn);
+      SqlCommand cmd = new SqlCommand("SELECT tasks.* FROM categories JOIN categories_tasks ON (categories.id = categories_tasks.category_id) JOIN tasks ON (categories_tasks.task_id = tasks.id) WHERE categories.id = @CategoryId;", conn);
       SqlParameter categoryIdParameter = new SqlParameter();
       categoryIdParameter.ParameterName = "@CategoryId";
-      categoryIdParameter.Value = this.GetId();
+      categoryIdParameter.Value = this.GetId().ToString();
       cmd.Parameters.Add(categoryIdParameter);
 
       SqlDataReader rdr = cmd.ExecuteReader();
 
-      List<int> taskIds = new List<int> {};
+      List<Task> tasks = new List<Task>{};
       while(rdr.Read())
       {
         int taskId = rdr.GetInt32(0);
-        taskIds.Add(taskId);
+        string taskDescription = rdr.GetString(1);
+        DateTime fakeTime = rdr.GetDateTime(2);
+        Task newTask = new Task(taskDescription,fakeTime, taskId);
+        tasks.Add(newTask);
       }
 
       if (rdr != null)
@@ -241,36 +244,11 @@ namespace ToDoList
         rdr.Close();
       }
 
-      List<Task> tasks = new List<Task>{};
-      foreach(int taskId in taskIds)
+      if(conn != null)
       {
-          SqlCommand taskQuery = new SqlCommand("SELECT * FROM tasks WHERE id= @TaskId ORDER BY due_date;",conn);
-
-          SqlParameter taskIdParameter= new SqlParameter();
-          taskIdParameter.ParameterName="@TaskId";
-          taskIdParameter.Value=taskId;
-          taskQuery.Parameters.Add(taskIdParameter);
-
-          SqlDataReader queryReader = taskQuery.ExecuteReader();
-          while(queryReader.Read())
-          {
-            int thisTaskId=queryReader.GetInt32(0);
-            string taskDescription=queryReader.GetString(1);
-            DateTime taskDueDate = queryReader.GetDateTime(2);
-            Task foundTask = new Task(taskDescription, taskDueDate, thisTaskId);
-            tasks.Add(foundTask);
-          }
-          if(queryReader!= null)
-          {
-            queryReader.Close();
-          }
-        }
-        if(conn != null)
-        {
           conn.Close();
-        }
+      }
         return tasks;
-
 
     }
 
